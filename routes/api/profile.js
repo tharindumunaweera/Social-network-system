@@ -36,6 +36,25 @@ router.get(
   }
 );
 
+// @route GET api/profile/all
+// @desc GET all profiles
+// @access Public
+router.get("/all", (req, res) => {
+  const errors = {};
+
+  Profile.find()
+    .populate("user", ["name", "avatar"])
+    .then(profiles => {
+      if (!profiles) {
+        errors.noprofile = "There are no profiles";
+        return res.status(404).json(errors);
+      }
+
+      res.json(profiles);
+    })
+    .catch(err => res.status(404).json({ Profile: "There are no profiles " }));
+});
+
 // @route GET api/profile/handle/:handle
 // @desc GET profile by handle
 // @access Public
@@ -43,7 +62,7 @@ router.get(
 router.get("/handle/:handle", (req, res) => {
   const errors = {};
 
-  Profile.findOne({ handel: req.params.handle })
+  Profile.findOne({ handle: req.params.handle })
     .populate("user", ["name", "avatar"])
     .then(profile => {
       if (!profile) {
@@ -54,6 +73,28 @@ router.get("/handle/:handle", (req, res) => {
       res.json(profile);
     })
     .catch(err => res.status(404).json(err));
+});
+
+// @route GET api/profile/user/:user_id
+// @desc GET profile by user ID
+// @access Public
+
+router.get("/user/:user_id", (req, res) => {
+  const errors = {};
+
+  Profile.findOne({ user: req.params.user_id })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.noprofile = "there is no profile for this user";
+        res.status(404).json(errors);
+      }
+
+      res.json(profile);
+    })
+    .catch(err =>
+      res.status(404).json({ Profile: "There is no profile for this user " })
+    );
 });
 
 // @route POST api/profile
