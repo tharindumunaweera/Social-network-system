@@ -1,1 +1,1 @@
-# Social-network-system for developers
+# Social-network-system for programmers
